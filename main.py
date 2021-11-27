@@ -1,22 +1,23 @@
 import os
-from classes import User
+from classes import *
+import time
 
+
+# GLOBALS
+NETWORK_SIZE = 100
 
 
 def clear():
     os.system('cls')
 
 
-
-
-
-
-
 def main():
-    pass
-
-
+    Network_Generator.generate_user_info(NETWORK_SIZE)
+    Network_Generator.generate_users()
+    # Network_Generator.show_user()
 
 
 if __name__ == '__main__':
+    clear()
     main()
+    input("Press enter to quit")
