@@ -4,7 +4,7 @@ import time
 
 
 # GLOBALS
-NETWORK_SIZE = 10
+NETWORK_SIZE = 300
 
 
 def clear():

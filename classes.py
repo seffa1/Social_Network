@@ -87,6 +87,9 @@ class Network_Generator:
 
     @classmethod
     def generate_users(cls):
+        # Its unlikely but technically possible to have two users with the same email generated
+        # In that case the second one would overwrite the first
+
         print('\nGenerating user accounts with user info....')
         while len(cls.name_list) > 0:
             name = cls.name_list.pop()
@@ -109,7 +112,7 @@ class Network_Generator:
         print('\nGenerating friend network...')
         for user_email in cls.user_dict:
             user = cls.user_dict[user_email]
-            number_of_friends = random.randint(1, len(cls.user_dict) // 3)  # at most you can be friends with a 1/3 of total users
+            number_of_friends = random.randint(1, len(cls.user_dict) // 10)  # at most you can be friends with a 1/3 of total users
 
             for i in range(0, number_of_friends):
                 friend = random.choice(list(cls.user_dict.values()))
@@ -118,7 +121,7 @@ class Network_Generator:
 
     @classmethod
     def print_connections(cls):
-        print('\nPrinting Connections...')
+        input("\nPress enter to print connections...")
         for user in cls.user_dict.values():
             print(f'Friends of {user.email}')
             for friend in user.friends:
