@@ -21,7 +21,7 @@ class User:
         self.user_ID = User.user_ID
 
     def add_friend(self, friend, weight):  # weight represents how much you interact with that friend
-        self.friends[friend] = weight
+        self.friends[friend.email] = weight
 
     def info(self):
         print(f'Name: {self.name}')
@@ -39,12 +39,12 @@ class User:
         pass
 
     def __repr__(self):
-        print(f'User ID: {self.user_ID}')
-        print(f'User Email: {self.email}')
+        return f'User ID: {self.user_ID}  Email: {self.email}'
+
 
 
 class Network_Generator:
-    user_list = {}  # User_ID : User Object
+    user_dict = {}  # user.email : user
     name_list = deque()
     email_list = deque()
     age_list = deque()
@@ -52,7 +52,8 @@ class Network_Generator:
 
     @classmethod
     def generate_user_info(cls, user_amount):
-        print(f'Generating info for {user_amount} users...')
+        print(f''
+              f'Generating info for {user_amount} users...')
         n = 0
 
         # Generates the names, age, and gender for the users from a text file of names
@@ -81,26 +82,46 @@ class Network_Generator:
         print('Done')
 
     @classmethod
+    def add_user(cls, user):
+        cls.user_dict[user.email] = user
+
+    @classmethod
     def generate_users(cls):
-        print('Generating user accounts with user info....')
+        print('\nGenerating user accounts with user info....')
         while len(cls.name_list) > 0:
             name = cls.name_list.pop()
             email = cls.email_list.pop()
             age = cls.age_list.pop()
             gender = cls.gender_list.pop()
             user = User(name, email, age, gender)
-            cls.user_list[user.user_ID] = user
+            cls.add_user(user)
+
         print('Done')
 
     @classmethod
     def show_user(cls):
-        print('Printing user list...')
-        for user in cls.user_list:
-            print(f'User_ID: {user} --- Name: {cls.user_list[user].name} --- Email: {cls.user_list[user].email}')
+        print('\nPrinting user list...')
+        for user in cls.user_dict:
+            print(f'ID: {cls.user_dict[user].user_ID}   Email: {user}')
 
     @classmethod
     def generate_user_friends(cls):
-        for user_ID in cls.user_list:
-            user = cls.user_list[user_ID]
-            number_of_friends = random.randint(1, len(cls.user_list)/3)  # at most you can be friends with a 1/3 of total users
+        print('\nGenerating friend network...')
+        for user_email in cls.user_dict:
+            user = cls.user_dict[user_email]
+            number_of_friends = random.randint(1, len(cls.user_dict) // 3)  # at most you can be friends with a 1/3 of total users
+
+            for i in range(0, number_of_friends):
+                friend = random.choice(list(cls.user_dict.values()))
+                likeness = random.randint(0, 9)
+                user.add_friend(friend, likeness)
+
+    @classmethod
+    def print_connections(cls):
+        print('\nPrinting Connections...')
+        for user in cls.user_dict.values():
+            print(f'Friends of {user.email}')
+            for friend in user.friends:
+                print(f'---> {user.friends[friend]}  {friend}')
+            print('-------------')
 
