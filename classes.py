@@ -1,7 +1,8 @@
 import os
 import random
 from collections import deque
-
+import networkx as nx
+import matplotlib.pyplot as plt
 
 def clear():
     os.system('cls')
@@ -40,7 +41,6 @@ class User:
 
     def __repr__(self):
         return f'User ID: {self.user_ID}  Email: {self.email}'
-
 
 
 class Network_Generator:
@@ -108,14 +108,23 @@ class Network_Generator:
             print(f'ID: {cls.user_dict[user].user_ID}   Email: {user}')
 
     @classmethod
-    def generate_user_friends(cls):
+    def generate_user_friends(cls, connectedness: int):
+
         print('\nGenerating friend network...')
         for user_email in cls.user_dict:
             user = cls.user_dict[user_email]
-            number_of_friends = random.randint(1, len(cls.user_dict) // 10)  # at most you can be friends with a 1/3 of total users
+            number_of_friends = random.randint(1, len(cls.user_dict) // connectedness)  # at most you can be friends with a 1/3 of total users
 
             for i in range(0, number_of_friends):
+                # Two users are going to end up each connecting to the other, resulting in two connections
+                # This should only be one connection, with one weight between the two
+                # We need to solve this issue:
+
+                # This makes us choose a user who is not already our friend
+                # while user not in friend.friends.values():
                 friend = random.choice(list(cls.user_dict.values()))
+
+
                 likeness = random.randint(0, 9)
                 user.add_friend(friend, likeness)
 
@@ -125,6 +134,12 @@ class Network_Generator:
         for user in cls.user_dict.values():
             print(f'Friends of {user.email}')
             for friend in user.friends:
-                print(f'---> {user.friends[friend]}  {friend}')
+                print(f'---> Weight: {user.friends[friend]}  {friend}')
             print('-------------')
+
+
+# https://www.geeksforgeeks.org/visualize-graphs-in-python/
+class Network_Visualizer:
+    def __init__(self):
+        self.connections
 
