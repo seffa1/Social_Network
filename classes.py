@@ -21,8 +21,10 @@ class User:
         User.user_ID += 1
         self.user_ID = User.user_ID
 
-    def add_friend(self, friend, weight):  # weight represents how much you interact with that friend
-        self.friends[friend.email] = weight
+    # Friend adding is something that should be happening at a graph level, not vertex level
+    # This method will be moved to the network generator
+    # def add_friend(self, friend, weight):  # weight represents how much you interact with that friend
+    #     self.friends[friend.email] = weight
 
     def info(self):
         print(f'Name: {self.name}')
@@ -45,6 +47,7 @@ class User:
 
 class Network_Generator:
     user_dict = {}  # user.email : user object
+    connections_dict = {}
     name_list = deque()
     email_list = deque()
     age_list = deque()
@@ -108,21 +111,36 @@ class Network_Generator:
             print(f'ID: {cls.user_dict[user].user_ID}   Email: {user}')
         print('----------------------\n')
 
-
     # This method needs re-written
-    # It should be chosing two friends at random, if they dont have a connection, make a connection with a weight
+    # It should be choosing two friends at random, if they dont have a connection, make a connection with a weight
     # Then add each other to each other's friends list
     # This way there is one edge with one weight instead of two
+    # @classmethod
+    # def generate_user_friends(cls, connectedness: int):
+    #     print('Generating friend network...')
+    #     for user_email in cls.user_dict:
+    #         user = cls.user_dict[user_email]
+    #         number_of_friends = random.randint(1, len(cls.user_dict) // connectedness)  # at most you can be friends with a 1/3 of total users
+    #         for i in range(0, number_of_friends):
+    #             friend = random.choice(list(cls.user_dict.values()))
+    #             likeness = random.randint(0, 9)
+    #             user.add_friend(friend, likeness)
+
     @classmethod
-    def generate_user_friends(cls, connectedness: int):
-        print('Generating friend network...')
-        for user_email in cls.user_dict:
-            user = cls.user_dict[user_email]
-            number_of_friends = random.randint(1, len(cls.user_dict) // connectedness)  # at most you can be friends with a 1/3 of total users
-            for i in range(0, number_of_friends):
-                friend = random.choice(list(cls.user_dict.values()))
-                likeness = random.randint(0, 9)
-                user.add_friend(friend, likeness)
+    def make_friends(cls, user1: User, user2: User, weight):
+        if user1.email == user2.email:
+            print(f"{user1.email} cannot be friends with themselves")
+        else:
+            # friends = {email: weight}
+            user1.friends[user2.email] = weight
+            user2.friends[user1.email] = weight
+            print(f'{user1.email} and {user2.email} are now friends: {weight}')
+
+    @classmethod
+    def generate_connections(cls, connectedness: int):
+        print('Generating connections...')
+        for user in cls.user_dict.values():
+            pass
 
     @classmethod
     def print_connections(cls):
