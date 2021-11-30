@@ -16,7 +16,7 @@ class User:
         self.age = age
         self.name = name
         self.gender = gender
-        self.friends = {}
+        self.friends = {}  # email: weight
 
         User.user_ID += 1
         self.user_ID = User.user_ID
@@ -44,7 +44,7 @@ class User:
 
 
 class Network_Generator:
-    user_dict = {}  # user.email : user
+    user_dict = {}  # user.email : user object
     name_list = deque()
     email_list = deque()
     age_list = deque()
@@ -106,53 +106,49 @@ class Network_Generator:
         print('\nPrinting user list...')
         for user in cls.user_dict:
             print(f'ID: {cls.user_dict[user].user_ID}   Email: {user}')
+        print('----------------------\n')
 
+
+    # This method needs re-written
+    # It should be chosing two friends at random, if they dont have a connection, make a connection with a weight
+    # Then add each other to each other's friends list
+    # This way there is one edge with one weight instead of two
     @classmethod
     def generate_user_friends(cls, connectedness: int):
-
-        print('\nGenerating friend network...')
+        print('Generating friend network...')
         for user_email in cls.user_dict:
             user = cls.user_dict[user_email]
             number_of_friends = random.randint(1, len(cls.user_dict) // connectedness)  # at most you can be friends with a 1/3 of total users
-
             for i in range(0, number_of_friends):
-                # Two users are going to end up each connecting to the other, resulting in two connections
-                # This should only be one connection, with one weight between the two
-                # We need to solve this issue:
-
-                # This makes us choose a user who is not already our friend
-                # while user not in friend.friends.values():
                 friend = random.choice(list(cls.user_dict.values()))
-
-
                 likeness = random.randint(0, 9)
                 user.add_friend(friend, likeness)
 
     @classmethod
     def print_connections(cls):
         input("\nPress enter to print connections...")
-
         for user in cls.user_dict.values():
-            print(f'Friends of {user.email}')
+            print(f'Friends of User ID:{user.user_ID} - {user.email}')
             for friend in user.friends:
-                print(f'---> Weight: {user.friends[friend]}  {friend}')
-            print('-------------')
-            # Print total connections here
-            print('-------------')
+                print(f'---> Weight: {user.friends[friend]} - ID: {cls.user_dict[friend].user_ID} - {friend}')
+            print('')
+        print('----------------------\n')
 
     @classmethod
-    def count_duplicates(cls):
-        # Its currently not working
-        input("Press enter to count duplicates")
+    def count_connections(cls):
         print("Counting duplicate connections...")
-        count = 0
+        duplicate_count = 0
+        connection_count = 0
         for user in cls.user_dict.values():
             for friend_email in user.friends:
+                connection_count += 1
                 friend = cls.user_dict[friend_email]
                 if user.email in friend.friends:
-                    count += 1
-        print(f'{count} duplicate connections found.')
-
+                    duplicate_count += 1
+                    print(f"Duplicate: {user.user_ID} and {friend.user_ID}")
+        print(f'Total Connections: {connection_count}')
+        print(f'Duplicate Connections: {duplicate_count}')
+        print('----------------------\n')
 
 
 # https://www.geeksforgeeks.org/visualize-graphs-in-python/

@@ -4,7 +4,7 @@ import time
 
 
 # GLOBALS
-NETWORK_SIZE = 100
+NETWORK_SIZE = 10
 
 # 1 is very connected, 100 is not so connected
 # Exp: 10 means a user can have a most 1/10th of the total network as friends
@@ -25,7 +25,7 @@ def main():
     Network_Generator.show_user()
     Network_Generator.generate_user_friends(CONNECTEDNESS)
     Network_Generator.print_connections()
-    Network_Generator.count_duplicates()
+    Network_Generator.count_connections()
 
 
 if __name__ == '__main__':
