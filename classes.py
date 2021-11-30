@@ -131,11 +131,28 @@ class Network_Generator:
     @classmethod
     def print_connections(cls):
         input("\nPress enter to print connections...")
+
         for user in cls.user_dict.values():
             print(f'Friends of {user.email}')
             for friend in user.friends:
                 print(f'---> Weight: {user.friends[friend]}  {friend}')
             print('-------------')
+            # Print total connections here
+            print('-------------')
+
+    @classmethod
+    def count_duplicates(cls):
+        # Its currently not working
+        input("Press enter to count duplicates")
+        print("Counting duplicate connections...")
+        count = 0
+        for user in cls.user_dict.values():
+            for friend_email in user.friends:
+                friend = cls.user_dict[friend_email]
+                if user.email in friend.friends:
+                    count += 1
+        print(f'{count} duplicate connections found.')
+
 
 
 # https://www.geeksforgeeks.org/visualize-graphs-in-python/
