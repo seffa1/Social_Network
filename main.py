@@ -67,16 +67,20 @@ def initialize():
     Network_Generator.generate_users()
     Network_Generator.generate_connections(MAX_FRIENDS)
     input('\nPress Enter to Continue')
+    terminal()
 
 def terminal():
     while True:
         clear()
-        options = ['1', '2', '3', 'X', 'x']
+        options = ['1', '2', '3', '4', '5', '6', 'X', 'x']
 
         print('Select Action:')
         print('1 ---> Show Users')
         print('2 ---> Print Connections')
-        print('3 ---> Find Path Between Users')
+        print('3 ---> Find user')
+        print('4 ---> Compare Searches for every user')
+        print('5 ---> Find Shortest Path Between Users')
+        print('6 ---> Reset Network')
         print('X ---> Exit\n')
 
         a = ''
@@ -90,18 +94,27 @@ def terminal():
             Network_Generator.print_connections()
             input('Press enter to continue')
         elif a == '3':
+            b = Network_Generator.get_user_ID()
+            clear()
+            print(Network_Generator.find_user_bredth(b))
+            print(Network_Generator.find_user_depth(b))
+            input('Press enter to continue')
+        elif a == '4':
+            pass
+        elif a == '5':
             pass
             input('Press enter to continue')
+        elif a == '6':
+            Network_Generator.clear_network()
+            initialize()
         else:
             break
 
 
-def main():
-    initialize()
-    terminal()
-
+# def main():
+#     initialize()
 
 if __name__ == '__main__':
     clear()
-    main()
+    initialize()
     input("Press enter to quit")

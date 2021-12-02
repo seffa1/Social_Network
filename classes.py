@@ -49,11 +49,17 @@ class User:
 
 class Network_Generator:
     user_dict = {}  # user.email : user object
-    connections_dict = {}
+    user_ID_dict = {}  # user.user_ID : user object
     name_list = deque()
     email_list = deque()
     age_list = deque()
     gender_list = deque()
+
+    @classmethod
+    def clear_network(cls):
+        cls.user_dict = {}
+        cls.user_ID_dict = {}
+        User.user_ID = 0
 
     @classmethod
     def generate_user_info(cls, user_amount):
@@ -88,6 +94,7 @@ class Network_Generator:
     @classmethod
     def add_user(cls, user):
         cls.user_dict[user.email] = user
+        cls.user_ID_dict[user.user_ID] = user
 
     @classmethod
     def generate_users(cls):
@@ -167,58 +174,109 @@ class Network_Generator:
         cls.add_user(user)
 
     @classmethod
-    def search_for_user(cls, name):
-        pass
+    def get_user_ID(cls):
+        print(f'Enter an ID number less than {len(cls.user_dict) + 1}')
+
+        while True:
+            try:
+                a = int(input('--->'))
+                break
+            except ValueError:
+                print("Please enter an integer")
+
+        user_ID_to_find = a
+
+        return user_ID_to_find
 
     @classmethod
-    def find_user_bredth(cls, user1: User, user2: User):
-        # This algorithm starts at user 1, and traverses the network until it finds user2
+    def find_user_bredth(cls, user_ID_to_find):
+        # This algorithm starts at user_ID_1, and traverses the network until it finds user_to_find
+        # Using a bredth, or "wide", search. Visiting all children nodes before moving on
+        # This is also iterative, as recursive would lead to stack overflow with a large connection count
+
         visit_count = 0
         visited = []
         path_queue = deque()
-        current_user = user1
 
-        # The search ends if this condition is met
-        if current_user.email == user2.email:
-            print('User Found!')
-            print(f'Visited {visit_count} user')
-            print(f'Visited the following users:')
-            for user in visited:
-                print(f'{user.name}')
-            return
+        # Starts with the user with user_ID of 1
+        starting_user = cls.user_ID_dict[1]
+        path_queue.appendleft(starting_user)
 
-        # If the user is not the one we are looking for
+        while len(path_queue) > 0:
+            # Move to the next user by taking the first child to enter the queue as that user
+            current_user = path_queue.pop()
+            visited.append(current_user.user_ID)
+            visit_count += 1
 
-        # Get all friends of the current user
-        current_user_friends_list = []
-        for friend_email in current_user.friends:
-            friend = cls.user_dict[friend_email]
-            current_user_friends_list.append(friend)
+            # The search ends if this condition is met
+            if current_user.user_ID == user_ID_to_find:
+                return (f'---> Bredth-Search Results <---\n' +
+                f'User Found: {cls.user_ID_dict[user_ID_to_find].email}\n' +
+                f'Visited {visit_count} / {len(cls.user_dict)} users:\n')
 
-        # We add their connections to the path_queue, then chose one at random
-        for friend in current_user_friends_list:
-            path_queue.appendleft(friend)
+            # Get all friend objects of the current user
+            current_user_friends_list = []
+            for friend_email in current_user.friends:
+                friend = cls.user_dict[friend_email]
+                current_user_friends_list.append(friend)
+
+            # We add their connections to the path_queue if we haven't already visited them
+            for friend in current_user_friends_list:
+                if friend.user_ID not in visited and friend not in path_queue:
+                    path_queue.appendleft(friend)
+
+        print('User does not exist!')
+
+    @classmethod
+    def find_user_depth(cls, user_ID_to_find):
+        # This algorithm starts at user_ID_1, and traverses the network until it finds user_to_find
+        # Using a depth-first, going deep down a branch of children before finishing all a users children
+        # This is also iterative, as recursive would lead to stack overflow with a large connection count
+
+        visit_count = 0
+        visited = []
+        path_stack = deque()
+
+        # Starts with the user with user_ID of 1
+        starting_user = cls.user_ID_dict[1]
+        path_stack.append(starting_user)
+
+        while len(path_stack) > 0:
+            # Move to the next user by taking the first child to enter the queue as that user
+            current_user = path_stack.pop()
+            visited.append(current_user.user_ID)
+            visit_count += 1
+
+            # The search ends if this condition is met
+            if current_user.user_ID == user_ID_to_find:
+                return (f'---> Depth-Search Results <---\n' +
+                        f'User Found: {cls.user_ID_dict[user_ID_to_find].email}\n' +
+                        f'Visited {visit_count} / {len(cls.user_dict)} users:\n')
+
+
+                # print(f'---> Depth-Search Results <---')
+                # print(f'User Found: {cls.user_ID_dict[user_ID_to_find].email}')
+                # print(f'Visited {visit_count} / {len(cls.user_dict)} users:')
 
 
 
-        # Make the chosen children the current child, check it, add its children to the queue
-        # The next child is the next in the queue, this is a bredth-first approach
-        # For a depth first search, we will use a stack instead of a queue
+            # Get all friend objects of the current user
+            current_user_friends_list = []
+            for friend_email in current_user.friends:
+                friend = cls.user_dict[friend_email]
+                current_user_friends_list.append(friend)
 
+            # We add their connections to the path_queue if we haven't already visited them
+            for friend in current_user_friends_list:
+                if friend.user_ID not in visited and friend not in path_stack:
+                    path_stack.append(friend)
 
+        print('User does not exist!')
 
-
-
-
-
-
-
-
-
-
-
-
-
+    @classmethod
+    def compare_searches_all_users:
+        # The depth and deep search will be run for all users except user_ID 1 and stored:
+        # results = {user_ID : (BFS_visited, DFS_visited)}
 
 
 # https://www.geeksforgeeks.org/visualize-graphs-in-python/
