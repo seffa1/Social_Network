@@ -96,10 +96,14 @@ def terminal():
         elif a == '3':
             b = Network_Generator.get_user_ID()
             clear()
-            print(Network_Generator.find_user_bredth(b))
-            print(Network_Generator.find_user_depth(b))
+            print(Network_Generator.find_user_bredth(b)[0])
+            print(Network_Generator.find_user_depth(b)[0])
             input('Press enter to continue')
         elif a == '4':
+            # The 2 algorithms visit the same total number of users when searching for all users
+            # Which is pretty cool
+            Network_Generator.compare_searches_all_users()
+            input('Press enter to continue')
             pass
         elif a == '5':
             pass

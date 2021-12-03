@@ -1,6 +1,7 @@
 import os
 import random
 from collections import deque
+from min_heap import *
 # import networkx as nx
 # import matplotlib.pyplot as plt
 
@@ -157,7 +158,6 @@ class Network_Generator:
         print(f'Average Friends: {cls.connections // len(cls.user_dict)}')
         print('Done')
 
-
     @classmethod
     def print_connections(cls):
         for user in cls.user_dict.values():
@@ -210,9 +210,9 @@ class Network_Generator:
 
             # The search ends if this condition is met
             if current_user.user_ID == user_ID_to_find:
-                return (f'---> Bredth-Search Results <---\n' +
+                return ([f'---> Bredth-Search Results <---\n' +
                 f'User Found: {cls.user_ID_dict[user_ID_to_find].email}\n' +
-                f'Visited {visit_count} / {len(cls.user_dict)} users:\n')
+                f'Visited {visit_count} / {len(cls.user_dict)} users:\n', visit_count])
 
             # Get all friend objects of the current user
             current_user_friends_list = []
@@ -249,9 +249,9 @@ class Network_Generator:
 
             # The search ends if this condition is met
             if current_user.user_ID == user_ID_to_find:
-                return (f'---> Depth-Search Results <---\n' +
+                return ([f'---> Depth-Search Results <---\n' +
                         f'User Found: {cls.user_ID_dict[user_ID_to_find].email}\n' +
-                        f'Visited {visit_count} / {len(cls.user_dict)} users:\n')
+                        f'Visited {visit_count} / {len(cls.user_dict)} users:\n', visit_count])
 
 
                 # print(f'---> Depth-Search Results <---')
@@ -274,9 +274,25 @@ class Network_Generator:
         print('User does not exist!')
 
     @classmethod
-    def compare_searches_all_users:
+    def compare_searches_all_users(cls):
         # The depth and deep search will be run for all users except user_ID 1 and stored:
         # results = {user_ID : (BFS_visited, DFS_visited)}
+        results = {}
+        BFS_total_visits = 0
+        DFS_total_visits = 0
+        for user_ID in cls.user_ID_dict:  # user.user_ID : user object
+            BFS_results = cls.find_user_bredth(user_ID)[1]
+            DFS_results = cls.find_user_depth(user_ID)[1]
+            results[user_ID] = (BFS_results, DFS_results)
+            BFS_total_visits += BFS_results
+            DFS_total_visits += DFS_results
+
+        clear()
+        print('---> BREDTH VS DEPTH <---')
+        print(f'Total Visits: BFS {BFS_total_visits}  DPS {DFS_total_visits}')
+        for user_ID in results:
+            print(f'User: {user_ID}  BFS: {results[user_ID][0]}  DFS: {results[user_ID][1]}')
+
 
 
 # https://www.geeksforgeeks.org/visualize-graphs-in-python/
